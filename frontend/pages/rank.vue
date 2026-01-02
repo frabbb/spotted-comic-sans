@@ -1,4 +1,6 @@
 <script setup>
+import confetti from "canvas-confetti";
+
 import spotsQuery from "@/graphql/queries/sanity/entries/spots";
 const { locale } = useI18n();
 
@@ -51,21 +53,49 @@ const allYears = entries.value.reduce(
 
 const currentYear = ref(2025);
 const speed = ref(6);
+
 const startDate = computed(() => {
   const spotsOfYear = entries.value.filter((e) =>
     currentYear.value ? new Date(e.datetime).getFullYear() === currentYear.value : true,
   );
   return new Date(Math.min(...spotsOfYear.map((e) => new Date(e.datetime))));
 });
+
 const endDate = computed(
   () =>
     new Date(
-      currentYear.value || Math.max(...allYears.filter((y) => y.value).map((y) => y.value)),
-      11,
-      31,
+      (currentYear.value || Math.max(...allYears.filter((y) => y.value).map((y) => y.value))) + 1,
+      0,
+      1,
     ),
 );
 const currentDate = ref(startDate.value);
+
+const ended = computed(() => {
+  const targetDate = new Date(endDate.value.getTime() - 24 * 60 * 60 * 1000);
+
+  return (
+    targetDate.getDate() === currentDate.value.getDate() &&
+    targetDate.getMonth() === currentDate.value.getMonth() &&
+    targetDate.getFullYear() === currentDate.value.getFullYear()
+  );
+});
+
+watch(ended, (newVal) => {
+  if (newVal) {
+    const repetitions = 10;
+
+    for (let i = 0; i < repetitions; i++) {
+      setTimeout(() => {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+      }, i * 1000);
+    }
+  }
+});
 
 const primaryColorMap = {
   2025: "yellow",
@@ -124,7 +154,8 @@ const minFonSize = 15;
 useRafFn(() => {
   //add one hour to the current date
   const nextDate = new Date(currentDate.value.getTime() + speed.value * 60 * 60 * 1000);
-  if (nextDate <= endDate.value) {
+
+  if (nextDate < endDate.value) {
     currentDate.value = nextDate;
   }
 });
@@ -160,10 +191,7 @@ function getTopPosition(index) {
 }
 
 function changeYear(event) {
-  nextTick(() => {
-    console.log(startDate.value, endDate.value);
-    currentDate.value = startDate.value;
-  });
+  currentDate.value = startDate.value;
 }
 </script>
 
