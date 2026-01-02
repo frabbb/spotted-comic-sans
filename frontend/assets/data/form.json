@@ -1,0 +1,289 @@
+{
+  "title": "Sample form",
+  "handle": "sampleForm",
+  "rows": [
+    {
+      "fields": [
+        {
+          "label": "Introduction",
+          "id": "8",
+          "handle": "introduction",
+          "displayName": "Html",
+          "placeholder": null,
+          "instructions": null,
+          "errorMessage": null,
+          "required": false,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "htmlContent": "Hi! nice to meet you!"
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "Name",
+          "id": "20",
+          "handle": "name",
+          "displayName": "Group",
+          "placeholder": null,
+          "instructions": "Pleas let us know your name",
+          "errorMessage": null,
+          "required": false,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "labelPosition": "verbb\\formie\\positions\\Hidden",
+          "rows": [
+            {
+              "fields": [
+                {
+                  "label": "Name",
+                  "labelPosition": null,
+                  "id": "18",
+                  "handle": "name",
+                  "displayName": "SingleLineText",
+                  "placeholder": "Your Name",
+                  "instructions": null,
+                  "errorMessage": null,
+                  "required": false,
+                  "defaultValue": null,
+                  "conditions": null,
+                  "matchField": null,
+                  "min": null,
+                  "max": null
+                },
+                {
+                  "label": "Surname",
+                  "labelPosition": null,
+                  "id": "19",
+                  "handle": "surname",
+                  "displayName": "SingleLineText",
+                  "placeholder": "Your Surname",
+                  "instructions": null,
+                  "errorMessage": null,
+                  "required": false,
+                  "defaultValue": null,
+                  "conditions": null,
+                  "matchField": null,
+                  "min": null,
+                  "max": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "Contact Info",
+          "id": "10",
+          "handle": "contactInfo",
+          "displayName": "Group",
+          "placeholder": null,
+          "instructions": null,
+          "errorMessage": null,
+          "required": false,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "labelPosition": null,
+          "rows": [
+            {
+              "fields": [
+                {
+                  "label": "Email Address",
+                  "labelPosition": null,
+                  "id": "6",
+                  "handle": "emailAddress",
+                  "displayName": "Email",
+                  "placeholder": "e.g. psherman@wallaby.com",
+                  "instructions": "Please enter your email so we can get in touch.",
+                  "errorMessage": null,
+                  "required": true,
+                  "defaultValue": null,
+                  "conditions": null,
+                  "matchField": null
+                },
+                {
+                  "label": "Phone Number",
+                  "labelPosition": null,
+                  "id": "9",
+                  "handle": "phoneNumber",
+                  "displayName": "Phone",
+                  "placeholder": "Your phone",
+                  "instructions": null,
+                  "errorMessage": null,
+                  "required": false,
+                  "defaultValue": null,
+                  "conditions": null,
+                  "matchField": null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "Options",
+          "id": "13",
+          "handle": "options",
+          "displayName": "Group",
+          "placeholder": null,
+          "instructions": null,
+          "errorMessage": null,
+          "required": false,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "labelPosition": null,
+          "rows": [
+            {
+              "fields": [
+                {
+                  "label": "Choose one of the options",
+                  "labelPosition": null,
+                  "id": "11",
+                  "handle": "chooseOneOfTheOptions",
+                  "displayName": "Dropdown",
+                  "placeholder": null,
+                  "instructions": null,
+                  "errorMessage": null,
+                  "required": false,
+                  "defaultValue": null,
+                  "conditions": null,
+                  "matchField": null,
+                  "options": [
+                    {
+                      "isDefault": true,
+                      "label": "Option 1",
+                      "value": "1"
+                    },
+                    {
+                      "isDefault": false,
+                      "label": "Option 2",
+                      "value": "2"
+                    }
+                  ],
+                  "multi": false
+                }
+              ]
+            },
+            {
+              "fields": [
+                {
+                  "label": "Choose again",
+                  "labelPosition": null,
+                  "id": "12",
+                  "handle": "chooseAgain",
+                  "displayName": "Radio",
+                  "placeholder": null,
+                  "instructions": null,
+                  "errorMessage": null,
+                  "required": false,
+                  "defaultValue": null,
+                  "conditions": null,
+                  "matchField": null,
+                  "options": [
+                    {
+                      "isDefault": true,
+                      "label": "Option 1",
+                      "value": "1"
+                    },
+                    {
+                      "isDefault": false,
+                      "label": "Option 2",
+                      "value": "2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "When?",
+          "id": "16",
+          "handle": "when",
+          "displayName": "Date",
+          "placeholder": null,
+          "instructions": null,
+          "errorMessage": null,
+          "required": false,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "defaultDate": null,
+          "minDate": null,
+          "maxDate": null,
+          "fields": [
+            {
+              "handle": "date"
+            },
+            {
+              "handle": "time"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "How old are you",
+          "id": "22",
+          "handle": "howOldAreYou",
+          "displayName": "Number",
+          "placeholder": null,
+          "instructions": null,
+          "errorMessage": null,
+          "required": false,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "maxValue": null,
+          "minValue": null
+        }
+      ]
+    },
+    {
+      "fields": [
+        {
+          "label": "Message",
+          "id": "7",
+          "handle": "message",
+          "displayName": "MultiLineText",
+          "placeholder": "e.g. The reason for my enquiry is...",
+          "instructions": "Please enter your comments.",
+          "errorMessage": null,
+          "required": true,
+          "defaultValue": null,
+          "conditions": null,
+          "matchField": null,
+          "min": null,
+          "max": null
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "settings": {
+        "submitButtonLabel": "Contact us"
+      }
+    }
+  ],
+  "settings": {
+    "submitActionMessageHtml": "<p>Thank you for contacting us! Our team will get in touch shortly to follow up on your message.</p>"
+  }
+}

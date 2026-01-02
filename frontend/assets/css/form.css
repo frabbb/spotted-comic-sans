@@ -1,0 +1,10 @@
+input[type="checkbox"],
+input[type="radio"] {
+  + .formkit-decorator .formkit-icon .inner {
+    display: none;
+  }
+
+  &:checked + .formkit-decorator .formkit-icon .inner {
+    display: block;
+  }
+}

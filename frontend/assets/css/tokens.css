@@ -1,0 +1,155 @@
+:root {
+  --color-white: rgb(255, 255, 255);
+  --color-black: rgb(0, 0, 0);
+  --color-black-transparent: rgba(0, 0, 0, 0.75);
+  --color-white-transparent: rgba(255, 255, 255, 0.75);
+  --color-grey-100: rgb(245, 245, 245);
+  --color-grey-300: rgb(230, 230, 230);
+  --color-grey-500: rgb(200, 200, 200);
+  --color-grey-700: rgb(150, 150, 150);
+  --color-grey-900: rgb(50, 50, 50);
+  --spacing-0: 0px;
+  --spacing-xs: 4px;
+  --spacing-s: 8px;
+  @media (min-width: 768px) {
+    --spacing-s: 10px;
+  }
+  --spacing-m: 18px;
+  @media (min-width: 768px) {
+    --spacing-m: 24px;
+  }
+  --spacing-l: 48px;
+  --spacing-xl: 48px;
+  @media (min-width: 768px) {
+    --spacing-xl: 64px;
+  }
+  @media (min-width: 1440px) {
+    --spacing-xl: 80px;
+  }
+  --spacing-2xl: 80px;
+  @media (min-width: 768px) {
+    --spacing-2xl: 96px;
+  }
+  @media (min-width: 1440px) {
+    --spacing-2xl: 128px;
+  }
+  --spacing-icon: 14px;
+  --spacing-caption: 60px;
+  --spacing-slider: 50vh;
+  --radius-DEFAULT: 4px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --blur-DEFAULT: 20px;
+  --aspect-video: 16/9;
+  --aspect-thumb: 4/5;
+}
+
+@theme {
+  --*: initial;
+  --breakpoint-s: 768px;
+  --breakpoint-m: 1440px;
+  
+  --color-white: var(--color-white);
+  --color-black: var(--color-black);
+  --color-black-transparent: var(--color-black-transparent);
+  --color-white-transparent: var(--color-white-transparent);
+  --color-grey-100: var(--color-grey-100);
+  --color-grey-300: var(--color-grey-300);
+  --color-grey-500: var(--color-grey-500);
+  --color-grey-700: var(--color-grey-700);
+  --color-grey-900: var(--color-grey-900);
+  --spacing-0: var(--spacing-0);
+  --spacing-xs: var(--spacing-xs);
+  --spacing-s: var(--spacing-s);
+  --spacing-m: var(--spacing-m);
+  --spacing-l: var(--spacing-l);
+  --spacing-xl: var(--spacing-xl);
+  --spacing-2xl: var(--spacing-2xl);
+  --spacing-icon: var(--spacing-icon);
+  --spacing-caption: var(--spacing-caption);
+  --spacing-slider: var(--spacing-slider);
+  --radius-DEFAULT: var(--radius-DEFAULT);
+  --ease: var(--ease);
+  --blur-DEFAULT: var(--blur-DEFAULT);
+  --aspect-video: var(--aspect-video);
+  --aspect-thumb: var(--aspect-thumb);
+}
+
+@custom-variant s {
+  @media (min-width: 768px) {
+    @slot;
+  }
+}
+
+@custom-variant m {
+  @media (min-width: 1440px) {
+    @slot;
+  }
+}
+
+@utility typo-2xl {
+  font-family: Comic Sans MS;
+  font-size: 20vw;
+  line-height: 1;
+}
+
+@utility typo-xl {
+  font-family: Comic Sans MS;
+  font-size: 60px;
+  @media (min-width: 768px) {
+    font-size: 72px;
+  }
+  @media (min-width: 1440px) {
+    font-size: 80px;
+  }
+  line-height: 1.2;
+}
+
+@utility typo-l {
+  font-family: Comic Sans MS;
+  font-size: 15px;
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+  line-height: 1.2;
+}
+
+@utility typo-m {
+  font-family: Comic Sans MS;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+@utility typo-s {
+  font-family: Comic Sans MS;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+@utility typo-xs {
+  font-family: Comic Sans MS;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+@utility lay {
+  display: grid;
+  grid-auto-flow: initial;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-rows: minmax(0, auto);
+}
+@utility lay-v {
+  grid-auto-flow: row;
+}
+@utility lay-h {
+    grid-auto-flow: column;
+  }
+@utility lay-o {
+  &>* {
+    grid-area: 1 / 1;
+  }
+}
+@utility lay-fluid {
+  grid-auto-columns: initial;
+  grid-auto-rows: initial;
+  justify-content: flex-start;
+}

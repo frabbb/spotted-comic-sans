@@ -22,12 +22,13 @@ const client = createClient({
 // Parse CSV line and clean invisible Unicode characters
 function parseCSVLine(line) {
   const regex = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/
-  return line.split(regex).map((field) => 
-    field.trim()
+  return line.split(regex).map((field) =>
+    field
+      .trim()
       // Remove all Unicode direction marks and invisible characters
       .replace(/[\u200B-\u200F\u202A-\u202E\uFEFF]/g, '')
       // Remove BOM
-      .replace(/^\uFEFF/, '')
+      .replace(/^\uFEFF/, ''),
   )
 }
 
@@ -170,16 +171,12 @@ async function createSpot(memberName, dateStr, timeStr, mediaFilename, mediaPath
   // Parse datetime
   const datetime = parseDate(dateStr, timeStr)
 
-  // Check if spot with same member and datetime already exists
-  const existingSpotQuery = `*[_type == "spot" && member._ref == $memberId && datetime == $datetime][0]`
-  const existingSpot = await client.fetch(existingSpotQuery, {memberId, datetime})
-
-  // Handle media
+  // Handle media first to get the media ID for duplicate check
   let mediaId = null
   if (mediaFilename && mediaFilename !== 'Media omessi') {
-    const isVideo = mediaFilename.toLowerCase().endsWith('.mp4') || 
-                    mediaFilename.toLowerCase().endsWith('.opus')
-    
+    const isVideo =
+      mediaFilename.toLowerCase().endsWith('.mp4') || mediaFilename.toLowerCase().endsWith('.opus')
+
     if (isVideo) {
       mediaId = await uploadVideoAsset(mediaFilename, mediaPath)
     } else {
@@ -189,25 +186,26 @@ async function createSpot(memberName, dateStr, timeStr, mediaFilename, mediaPath
     console.log('  → No media to upload (Media omessi)')
   }
 
+  // Check if spot with same member, datetime AND media already exists
+  let existingSpotQuery
+  let queryParams
+
+  if (mediaId) {
+    // If there's media, check for member + datetime + media combination
+    existingSpotQuery = `*[_type == "spot" && member._ref == $memberId && datetime == $datetime && media._ref == $mediaId][0]`
+    queryParams = {memberId, datetime, mediaId}
+  } else {
+    // If no media, check for member + datetime + no media
+    existingSpotQuery = `*[_type == "spot" && member._ref == $memberId && datetime == $datetime && !defined(media)][0]`
+    queryParams = {memberId, datetime}
+  }
+
+  const existingSpot = await client.fetch(existingSpotQuery, queryParams)
+
   if (existingSpot) {
-    // Update existing spot
-    console.log(`  ℹ Spot already exists, updating: ${existingSpot._id}`)
-    
-    const updates = {
-      title: `${memberName} - ${dateStr}`,
-    }
-
-    // Update media reference if provided
-    if (mediaId) {
-      updates.media = {
-        _type: 'reference',
-        _ref: mediaId,
-      }
-    }
-
-    const updatedSpot = await client.patch(existingSpot._id).set(updates).commit()
-    console.log(`  ✓ Updated spot: ${updatedSpot._id}`)
-    return updatedSpot
+    // Skip if exact spot already exists (same member + datetime + media)
+    console.log(`  ℹ Spot already exists, skipping: ${existingSpot._id}`)
+    return existingSpot
   }
 
   // Create new spot document
@@ -246,7 +244,7 @@ async function importSpots() {
 
   // Skip header and process ALL data rows
   const dataLines = lines.slice(1)
-  
+
   console.log(`Starting import of ${dataLines.length} rows...\n`)
 
   for (const line of dataLines) {
@@ -267,4 +265,3 @@ importSpots().catch((error) => {
   console.error('Import failed:', error)
   process.exit(1)
 })
-

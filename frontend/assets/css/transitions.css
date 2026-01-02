@@ -1,0 +1,62 @@
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease-in-out;
+
+  .backdrop,
+  .modal {
+    transition: all 0.2s ease-in-out;
+  }
+}
+.modal-enter-from,
+.modal-leave-to {
+  .backdrop {
+    opacity: 0;
+  }
+
+  .modal {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.modal-popup-enter-active,
+.modal-popup-leave-active {
+  transition: all 0.2s ease-in-out;
+  .modal {
+    transition: all 0.2s ease-in-out;
+  }
+}
+.modal-popup-enter-from,
+.modal-popup-leave-to {
+  .modal {
+    transform: translateX(calc(100% + var(--spacing-s)));
+  }
+}
+
+.snackbar-enter-active,
+.snackbar-leave-active {
+  transition: height 0.2s ease-in-out;
+  height: var(--height, auto);
+
+  .content {
+    transition: transform 0.2s ease-in-out;
+  }
+}
+
+.snackbar-enter-from,
+.snackbar-leave-to {
+  height: 0px;
+
+  .content {
+    transform: translateY(-100%);
+  }
+}
