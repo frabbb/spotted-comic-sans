@@ -14,6 +14,8 @@ const { data } = await useData({
 
 entries.value = data?.value?.entries;
 
+let timeouts = [];
+
 const cssColors = [
   "red",
   "purple",
@@ -86,13 +88,15 @@ watch(ended, (newVal) => {
     const repetitions = 10;
 
     for (let i = 0; i < repetitions; i++) {
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-      }, i * 1000);
+      timeouts.push(
+        setTimeout(() => {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          });
+        }, i * 1000),
+      );
     }
   }
 });
@@ -151,14 +155,29 @@ const maxFontSize = computed(() => {
 
 const minFonSize = 15;
 
-useRafFn(() => {
-  //add one hour to the current date
-  const nextDate = new Date(currentDate.value.getTime() + speed.value * 60 * 60 * 1000);
+const running = ref(false);
 
-  if (nextDate < endDate.value) {
-    currentDate.value = nextDate;
-  }
-});
+const { pause: pauseRaf, resume: resumeRaf } = useRafFn(
+  () => {
+    //add one hour to the current date
+    const nextDate = new Date(currentDate.value.getTime() + speed.value * 60 * 60 * 1000);
+
+    if (nextDate < endDate.value) {
+      currentDate.value = nextDate;
+    }
+  },
+  { immediate: false },
+);
+
+function start() {
+  running.value = true;
+  resumeRaf();
+}
+
+function stop() {
+  running.value = false;
+  pauseRaf();
+}
 
 function formatDate(date) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -192,7 +211,18 @@ function getTopPosition(index) {
 
 function changeYear(event) {
   currentDate.value = startDate.value;
+
+  nextTick(() => {
+    stop();
+    running.value = false;
+  });
+
+  timeouts.forEach((timeout) => clearTimeout(timeout));
+  timeouts = [];
 }
+
+const headerContent = ref(null);
+const { height: headerContentHeight } = useElementBounding(headerContent);
 </script>
 
 <template>
@@ -205,29 +235,68 @@ function changeYear(event) {
       :style="{ backgroundColor: `${primaryColor}` }"
     ></div>
 
-    <div class="p-s pb-l">
-      <div class="pb-xl s:min-h-[50vh] grid content-start justify-center">
-        <ElementsText class="w-full text-center" :theme="{ size: 'l' }"
-          >Spotted Comic Sans Wrapped</ElementsText
-        >
-        <select v-model="currentYear" @change="changeYear" id="year">
-          <option v-for="year in allYears" :value="year.value">
-            {{ year.label }}
-          </option>
-        </select>
-        <label for="year" class="typo-xs text-center">Select Year</label>
+    <div>
+      <div
+        class="p-m flex flex-col items-center justify-center transition-all duration-500"
+        :style="{ '--content-height': `${headerContentHeight}px` }"
+        :class="{
+          'pb-l h-[calc(var(--content-height)+var(--spacing-l)+var(--spacing-m))]': running,
+          'h-svh': !running,
+        }"
+      >
+        <div ref="headerContent">
+          <div class="pb-xl s:min-h-[50vh] grid content-start justify-center">
+            <ElementsText class="w-full text-center" :theme="{ size: 'l' }"
+              >Spotted Comic Sans Wrapped</ElementsText
+            >
+            <select v-model="currentYear" @change="changeYear" id="year">
+              <option v-for="year in allYears" :value="year.value">
+                {{ year.label }}
+              </option>
+            </select>
+            <label for="year" class="typo-xs text-center">Select Year</label>
+          </div>
+
+          <ElementsText :theme="{ size: 'l' }" class="pb-m text-center" v-show="!running">
+            Who’s
+            {{
+              !currentYear
+                ? "the ALL TIME"
+                : currentYear == new Date().getFullYear() - 1
+                  ? "last year"
+                  : currentYear
+            }}
+            Ultimate Comic Sans Spotter?
+          </ElementsText>
+
+          <div class="flex justify-center" v-show="!running">
+            <button
+              :style="{ backgroundColor: `${secondaryColor}` }"
+              @click="start"
+              class="p-s px-m cursor-pointer rounded-full hover:scale-90"
+            >
+              <ElementsText :theme="{ size: 'xl', variant: 'white' }">START</ElementsText>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div
         class="p-s sticky top-0 z-1 w-full text-center"
+        :class="{ 'opacity-0': ended }"
         :style="{ backgroundColor: `${primaryColor}` }"
+        v-show="running"
       >
         <p class="typo-l" :style="{ color: `${secondaryColor}` }">
           {{ formatDate(currentDate) }}
         </p>
       </div>
 
-      <div class="relative w-full" :style="{ height: `${getTopPosition(rank.length - 1)}px` }">
+      <div
+        class="relative w-full"
+        :style="{ height: `${getTopPosition(rank.length - 1)}px` }"
+        v-show="running"
+      >
         <div
           v-for="member in allMembers"
           class="px-s absolute top-0 left-1/2 flex w-full items-center transition-all duration-150"
@@ -257,7 +326,7 @@ select {
   appearance: none;
   cursor: pointer;
   font-family: Comic Sans MS;
-  font-size: 20vw;
+  font-size: 25vw;
   line-height: 1;
   outline: none;
   text-align: center;
@@ -271,6 +340,10 @@ select {
     &:hover {
       color: black;
     }
+  }
+
+  @media (min-width: 768px) {
+    font-size: 20vw;
   }
 }
 </style>

@@ -88,25 +88,22 @@
 
 @utility typo-2xl {
   font-family: Comic Sans MS;
-  font-size: 20vw;
+  font-size: 40vw;
+  @media (min-width: 768px) {
+    font-size: 20vw;
+  }
   line-height: 1;
 }
 
 @utility typo-xl {
   font-family: Comic Sans MS;
-  font-size: 60px;
-  @media (min-width: 768px) {
-    font-size: 72px;
-  }
-  @media (min-width: 1440px) {
-    font-size: 80px;
-  }
+  font-size: 35px;
   line-height: 1.2;
 }
 
 @utility typo-l {
   font-family: Comic Sans MS;
-  font-size: 15px;
+  font-size: 20px;
   @media (min-width: 768px) {
     font-size: 24px;
   }
