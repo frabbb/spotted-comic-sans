@@ -54,7 +54,7 @@ const allYears = entries.value.reduce(
 );
 
 const currentYear = ref(2025);
-const speed = ref(6);
+const speed = ref(5);
 
 const startDate = computed(() => {
   const spotsOfYear = entries.value.filter((e) =>
@@ -228,7 +228,7 @@ const { height: headerContentHeight } = useElementBounding(headerContent);
 <template>
   <main
     class="min-h-screen"
-    :style="{ '--primary-color': `${primaryColor}`, '--secondary-color': `${secondaryColor}` }"
+    :style="{ '--color-primary': `${primaryColor}`, '--color-secondary': `${secondaryColor}` }"
   >
     <div
       class="fixed top-0 left-0 -z-1 h-full w-full"
@@ -257,6 +257,24 @@ const { height: headerContentHeight } = useElementBounding(headerContent);
             <label for="year" class="typo-xs text-center">Select Year</label>
           </div>
 
+          <div class="gap-m flex items-center justify-center" v-show="running && !ended">
+            <ElementsLink
+              @click="speed = Math.max(0, speed - 1)"
+              :theme="{ type: 'button', variant: 'secondary', size: 'l' }"
+              class="aspect-square"
+            >
+              <ElementsText :theme="{ size: 'xl', variant: 'white' }" class="trim">-</ElementsText>
+            </ElementsLink>
+            <ElementsText :theme="{ size: 'l' }">SPEED: {{ speed }}</ElementsText>
+            <ElementsLink
+              @click="speed++"
+              :theme="{ type: 'button', variant: 'secondary', size: 'l' }"
+              class="aspect-square"
+            >
+              <ElementsText :theme="{ size: 'xl', variant: 'white' }" class="trim">+</ElementsText>
+            </ElementsLink>
+          </div>
+
           <ElementsText :theme="{ size: 'l' }" class="pb-m text-center" v-show="!running">
             Who’s
             {{
@@ -270,13 +288,9 @@ const { height: headerContentHeight } = useElementBounding(headerContent);
           </ElementsText>
 
           <div class="flex justify-center" v-show="!running">
-            <button
-              :style="{ backgroundColor: `${secondaryColor}` }"
-              @click="start"
-              class="p-s px-m cursor-pointer rounded-full hover:scale-90"
-            >
+            <ElementsLink :theme="{ type: 'button', variant: 'secondary' }" @click="start">
               <ElementsText :theme="{ size: 'xl', variant: 'white' }">START</ElementsText>
-            </button>
+            </ElementsLink>
           </div>
         </div>
       </div>

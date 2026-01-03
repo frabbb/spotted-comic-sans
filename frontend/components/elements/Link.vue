@@ -30,12 +30,14 @@ const classes = cva("cursor-pointer text-decoration-none color-inherit uppercase
     type: {
       element: "",
       link: "flex",
-      button: "grid p-xs",
+      button:
+        "  px-m py-s rounded-full hover:scale-90 transition-all duration-150 flex items-center justify-center",
     },
     variant: {
       default: "",
       underline: "underline",
       primary: "bg-black p-s",
+      secondary: "",
     },
     color: {
       black: "text-black",
@@ -57,6 +59,11 @@ const classes = cva("cursor-pointer text-decoration-none color-inherit uppercase
       type: "button",
       variant: "default",
       class: "text-white bg-black",
+    },
+    {
+      type: "button",
+      variant: "secondary",
+      class: "text-white bg-[var(--color-secondary)]",
     },
   ],
   defaultVariants: {
