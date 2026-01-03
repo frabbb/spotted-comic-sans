@@ -22,6 +22,8 @@ const classes = cva("", {
       l: "typo-l",
       xl: "typo-xl",
       "2xl": "typo-2xl",
+      month: "typo-month",
+      year: "typo-year",
     },
     variant: {
       black: "text-black",

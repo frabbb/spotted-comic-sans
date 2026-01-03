@@ -8,7 +8,7 @@ const entries = ref([]);
 
 const { data } = await useData({
   key: `spots`,
-  query: spotsQuery(), // Chiama la funzione con le variabili
+  query: spotsQuery(),
   locale: locale.value,
 });
 
@@ -177,14 +177,6 @@ function start() {
 function stop() {
   running.value = false;
   pauseRaf();
-}
-
-function formatDate(date) {
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
 }
 
 function findMemberIndex(member) {

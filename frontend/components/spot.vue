@@ -52,8 +52,9 @@ function toggleZoom(e) {
       }}</ElementsText>
     </div>
 
-    <ElementsMedium :item="media" v-if="media" :class="{ 'opacity-0': media && transitioning }" />
-    <div v-else class="bg-grey-100 aspect-[4/5] w-full"></div>
+    <div v-if="media" class="aspect-square w-full">
+      <ElementsMedium :item="media" theme="fill" :class="{ 'opacity-0': media && transitioning }" />
+    </div>
 
     <Transition name="fade">
       <div

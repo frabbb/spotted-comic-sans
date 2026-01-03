@@ -86,3 +86,7 @@ body {
 button {
   touch-action: manipulation;
 }
+
+input:focus-visible {
+  outline: none;
+}

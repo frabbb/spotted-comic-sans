@@ -93,6 +93,18 @@
   }
 }
 
+@utility typo-year {
+  font-family: var(--font-sans);
+  font-size: 30vw;
+  line-height: 1;
+}
+
+@utility typo-month {
+  font-family: var(--font-sans);
+  font-size: 18vw;
+  line-height: 1;
+}
+
 @utility typo-2xl {
   font-family: var(--font-sans);
   font-size: 40vw;
