@@ -43,11 +43,18 @@
   --aspect-thumb: 4/5;
 }
 
+@font-face {
+  font-family: "Comic Sans";
+  font-weight: 500;
+  font-style: normal;
+  src: url('/fonts/ComicSansMS3.ttf') format('truetype');
+}
+
 @theme {
   --*: initial;
   --breakpoint-s: 768px;
   --breakpoint-m: 1440px;
-  
+  --font-sans: "Comic Sans";
   --color-white: var(--color-white);
   --color-black: var(--color-black);
   --color-black-transparent: var(--color-black-transparent);
@@ -87,7 +94,7 @@
 }
 
 @utility typo-2xl {
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 40vw;
   @media (min-width: 768px) {
     font-size: 20vw;
@@ -96,13 +103,13 @@
 }
 
 @utility typo-xl {
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 35px;
   line-height: 1.2;
 }
 
 @utility typo-l {
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 20px;
   @media (min-width: 768px) {
     font-size: 24px;
@@ -111,19 +118,19 @@
 }
 
 @utility typo-m {
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 18px;
   line-height: 1.2;
 }
 
 @utility typo-s {
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.2;
 }
 
 @utility typo-xs {
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 13px;
   line-height: 1.2;
 }

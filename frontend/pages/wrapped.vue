@@ -325,11 +325,12 @@ const { height: headerContentHeight } = useElementBounding(headerContent);
 select {
   appearance: none;
   cursor: pointer;
-  font-family: Comic Sans MS;
+  font-family: var(--font-sans);
   font-size: 25vw;
   line-height: 1;
   outline: none;
   text-align: center;
+  text-align-last: center;
   color: var(--secondary-color);
 
   label {
