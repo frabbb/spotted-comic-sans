@@ -67,7 +67,7 @@ onKeyStroke(() => {
       />
     </div>
 
-    <div class="p-s gap-s grid grid-cols-4">
+    <div class="p-s gap-xs grid grid-cols-6">
       <template v-for="(date, index) in dates" :key="index">
         <!-- <div
           v-if="
@@ -116,6 +116,9 @@ onKeyStroke(() => {
           <ElementsText class="py-s absolute right-0 bottom-0" :theme="{ size: 'xs' }">
             {{ date.date.getDate() }}
           </ElementsText>
+
+          <div v-if="date.entries.length === 0" class="aspect-square w-full"></div>
+
           <div
             :class="{
               'grid grid-cols-2': date.entries.length > 1 && date.entries.length < 5,
