@@ -11,7 +11,9 @@ export default defineNuxtConfig({
     basicAuth: process.env.NUXT_BASIC_AUTH,
   },
 
-  nitro: { preset: process.env.NUXT_NITRO_PRESET },
+  nitro: {
+    preset: "github-pages",
+  },
 
   modules: [
     "@vueuse/nuxt",
@@ -50,5 +52,9 @@ export default defineNuxtConfig({
 
   linkChecker: { enabled: false },
   devtools: { enabled: false },
+
+  app: {
+    baseURL: "/spotted-comic-sans/",
+  },
   // ssr: false,
 });

@@ -1,5 +1,3 @@
-import spotsQuery from "@/graphql/queries/sanity/entries/spots";
-
 export default defineNuxtPlugin(async (nuxtApp) => {
   const userAgent = useRequestHeader("user-agent");
   useState("isCrawler", () => useCrawler(userAgent));
