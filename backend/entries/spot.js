@@ -1,16 +1,30 @@
 import {CommentIcon} from '@sanity/icons'
+import {useAutoGenerateTitle} from '../actions/generateTitle'
 
 export default {
   icon: CommentIcon,
   name: 'spot',
   title: 'Spots',
   type: 'document',
-  fields: [
-    {
-      name: 'title',
-      title: 'Title',
-      type: 'string',
+  components: {
+    input: (props) => {
+      useAutoGenerateTitle(props)
+      return props.renderDefault(props)
     },
+  },
+  search: {
+    title: {
+      field: 'title',
+      weight: 10,
+    },
+    fields: [
+      {field: 'title', weight: 10},
+      {field: 'member.title', weight: 8},
+      {field: 'media.title', weight: 5},
+      {field: 'media.description', weight: 3},
+    ],
+  },
+  fields: [
     {
       name: 'member',
       title: 'Member',
@@ -22,6 +36,23 @@ export default {
       title: 'Media',
       type: 'reference',
       to: [{type: 'imageAsset'}, {type: 'videoAsset'}],
+      options: {
+        filter: ({search}) => {
+          return search
+            ? {
+                filter: '$search match title || $search match description',
+                params: {search},
+              }
+            : {}
+        },
+      },
+    },
+    {
+      name: 'title',
+      title: 'Generated Title',
+      type: 'string',
+      readOnly: true,
+      description: 'Auto-generated from member and media',
     },
     {
       name: 'datetime',
@@ -32,12 +63,14 @@ export default {
   preview: {
     select: {
       media: 'media.image',
+      memberTitle: 'member.title',
+      mediaTitle: 'media.title',
       title: 'member.title',
       subtitle: 'datetime',
     },
-    prepare: ({media, title, subtitle}) => {
+    prepare: ({media, title, mediaTitle, memberTitle, subtitle}) => {
       return {
-        title: title,
+        title: `${memberTitle} ${mediaTitle ? `- ${mediaTitle}` : ''}`,
         subtitle: new Date(subtitle).toLocaleDateString('it-IT', {
           year: 'numeric',
           month: 'long',

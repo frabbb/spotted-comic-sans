@@ -9,15 +9,9 @@ const { locale } = useI18n();
 const entry = ref();
 const description = ref("");
 
-const saving = ref(false);
-const deleting = ref(false);
-const zoomedIn = ref(false);
-
-async function queryEntry(deleted = false) {
-  zoomedIn.value = false;
-
+async function queryEntry() {
   const { data } = await useData({
-    key: `spot-${index.value}${deleted ? new Date().getTime() : ""}`,
+    key: `spot-${index.value}`,
     query: spotsQuery, // Now we can filter by media in the query!
     locale: locale.value,
     variables: {
@@ -51,9 +45,8 @@ onKeyStroke("ArrowLeft", () => {
   index.value = Math.max(0, index.value - 1);
 });
 
-onKeyStroke("Enter", (e) => {
-  e.preventDefault();
-  // if (isFocused()) return;
+onKeyStroke("Enter", () => {
+  if (isFocused()) return;
   saveEntry();
 });
 
@@ -74,8 +67,6 @@ async function deleteEntry() {
   const confirmed = confirm("Are you sure you want to delete this entry?");
   if (!confirmed) return;
 
-  deleting.value = true;
-
   try {
     await $fetch("/api/edit", {
       method: "POST",
@@ -85,18 +76,16 @@ async function deleteEntry() {
       },
     });
 
-    await queryEntry(true);
+    // Move to next entry after deletion
+    await queryEntry();
   } catch (error) {
     console.error("Failed to delete entry:", error);
     alert("Failed to delete entry. Check console for details.");
   }
-  deleting.value = false;
 }
 
 async function saveEntry() {
   if (!entry.value?.media?._id) return;
-
-  saving.value = true;
 
   try {
     // Patch the media asset with the new description
@@ -112,16 +101,17 @@ async function saveEntry() {
     });
 
     // Move to next entry after saving
-    saving.value = false;
     index.value++;
   } catch (error) {
     console.error("Failed to save entry:", error);
     alert("Failed to save entry. Check console for details.");
-    saving.value = false;
   }
 }
 
+const zoomedIn = ref(false);
 const mediaContainer = ref(null);
+
+const { elementX, elementY, elementWidth, elementHeight } = useMouseInElement(mediaContainer);
 
 // Drag functionality
 const isDragging = ref(false);
@@ -170,11 +160,11 @@ function onMouseMove(e) {
     hasDragged.value = true;
   }
 
-  // Calculate bounds (scale is 3x, so the overflow is containerSize * (scale - 1) / 2)
+  // Calculate bounds (scale is 2x, so the overflow is containerSize * (scale - 1) / 2)
   if (mediaContainer.value) {
     const containerWidth = mediaContainer.value.clientWidth;
     const containerHeight = mediaContainer.value.clientHeight;
-    const scale = 3;
+    const scale = 2;
 
     // Divide by scale because translate happens in scaled coordinate system
     const adjustedDeltaX = deltaX / scale;
@@ -227,7 +217,7 @@ onUnmounted(() => {
         theme="fit"
         class="pointer-events-none"
         :class="{ 'transition-all duration-300': !isDragging }"
-        :style="zoomedIn ? { transform: `scale(3) translate(${panX}px, ${panY}px)` } : {}"
+        :style="zoomedIn ? { transform: `scale(2) translate(${panX}px, ${panY}px)` } : {}"
       />
     </div>
 
@@ -245,15 +235,13 @@ onUnmounted(() => {
           :theme="{ type: 'button', variant: 'secondary' }"
           :style="{ '--color-secondary': 'red' }"
           @click="deleteEntry"
-        >
-          {{ deleting ? "DELETING..." : "DELETE" }}</ElementsLink
+          >DELETE</ElementsLink
         >
         <ElementsLink
           :theme="{ type: 'button', variant: 'secondary' }"
           :style="{ '--color-secondary': 'blue' }"
           @click="saveEntry"
-        >
-          {{ saving ? "SAVING..." : "SAVE (ENTER)" }}</ElementsLink
+          >SAVE</ElementsLink
         >
       </div>
     </div>
