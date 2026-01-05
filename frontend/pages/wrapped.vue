@@ -1,15 +1,23 @@
 <script setup>
 import confetti from "canvas-confetti";
 
-import spotsQuery from "@/graphql/queries/sanity/entries/spots";
+import spotsQuery from "~/graphql/queries/sanity/entries/spots";
 const { locale } = useI18n();
 
 const entries = ref([]);
 
 const { data } = await useData({
   key: `spots`,
-  query: spotsQuery(),
+  query: spotsQuery, // Filter to only get spots with media
   locale: locale.value,
+  variables: {
+    before: null,
+    after: null,
+    limit: 9999,
+    offset: 0,
+    media: null,
+    fts: null,
+  },
 });
 
 entries.value = data?.value?.entries;

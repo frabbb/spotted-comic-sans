@@ -12,7 +12,7 @@ export default async ({ key, query, variables, lazy = false, route = { query: {}
     },
     body: {
       query,
-      variables: {
+      params: {
         ...variables,
         ...(locale && { site: locale }),
       },
@@ -20,7 +20,7 @@ export default async ({ key, query, variables, lazy = false, route = { query: {}
     method: "POST",
   });
 
-  data.value = dataFetch.value?.data;
+  data.value = dataFetch.value?.result;
   error.value = dataFetch.value?.errors || errorFetch.value;
 
   if (error.value) console.error(error.value);

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
       sanityApi: process.env.NUXT_PUBLIC_SANITY_API,
     },
     basicAuth: process.env.NUXT_BASIC_AUTH,
+    editToken: process.env.NUXT_SANITY_EDIT_TOKEN,
   },
 
   nitro: { preset: process.env.NUXT_NITRO_PRESET },

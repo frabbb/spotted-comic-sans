@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { cva } from "class-variance-authority";
-import projectsQuery from "@/graphql/queries/sanity/entries/projects";
+// TODO: Create GROQ query for projects if this component is needed
+// import projectsQuery from "@/graphql/queries/sanity/entries/projects";
 
 const props = withDefaults(
   defineProps<{
@@ -62,9 +63,10 @@ const skeletons = computed(() =>
 const doQuery = async () => {
   loading.value = true;
 
+  // TODO: Implement GROQ query for projects
   const { data } = await useData({
     key: key.value,
-    query: projectsQuery,
+    query: '', // projectsQuery - needs GROQ implementation
     variables: variables.value,
     lazy: true,
     locale: locale.value,

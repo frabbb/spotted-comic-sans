@@ -48,3 +48,4 @@ deleteAllSpots().catch((error) => {
 })
 
 
+

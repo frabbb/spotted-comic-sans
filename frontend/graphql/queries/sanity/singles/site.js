@@ -1,29 +1,63 @@
-import image from "@/graphql/queries/sanity/interfaces/image";
-import video from "@/graphql/queries/sanity/interfaces/video";
-import link from "@/graphql/queries/sanity/interfaces/link";
-
-export default /* GraphQL */ `
-  ${image}
-  ${video}
-  ${link}
-  query {
-    entry: allSite(limit: 1) {
-      name
-      tagline
-      description
-      social {
-        ...ImageInterface
+// GROQ query for site singleton
+export default `*[_type == "site"][0] {
+  _id,
+  name,
+  tagline,
+  description,
+  "social": social->{
+    _type,
+    _id,
+    title,
+    "image": {
+      "asset": image.asset->{
+        url,
+        "extension": extension,
+        "metadata": {
+          "dimensions": {
+            "height": metadata.dimensions.height,
+            "width": metadata.dimensions.width,
+            "aspectRatio": metadata.dimensions.aspectRatio
+          }
+        }
       }
-      bannerActive
-      bannerHeading
-      bannerTextRaw
-      bannerMedia {
-        ...ImageInterface
-        ...VideoInterface
+    },
+    description
+  },
+  bannerActive,
+  bannerHeading,
+  bannerTextRaw,
+  "bannerMedia": bannerMedia->{
+    _type,
+    _id,
+    title,
+    description,
+    _type == "imageAsset" => {
+      "image": {
+        "asset": image.asset->{
+          url,
+          "extension": extension,
+          "metadata": {
+            "dimensions": {
+              "height": metadata.dimensions.height,
+              "width": metadata.dimensions.width,
+              "aspectRatio": metadata.dimensions.aspectRatio
+            }
+          }
+        }
       }
-      bannerLink {
-        ...LinkInterface
+    },
+    _type == "videoAsset" => {
+      "file": {
+        "asset": file.asset->{
+          url,
+          "extension": extension
+        }
       }
     }
+  },
+  "bannerLink": bannerLink {
+    _type,
+    title,
+    url
   }
-`;
+}`;

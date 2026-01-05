@@ -59,7 +59,7 @@ function toggleZoom(e) {
     <Transition name="fade">
       <div
         v-if="zoomedIn && media"
-        class="p-s gap-xs fixed inset-0 z-1 flex flex-col items-center justify-end bg-white"
+        class="p-s gap-xs fixed inset-0 z-10 flex flex-col items-center justify-end bg-white"
       >
         <ElementsText class="text-center">{{
           member
@@ -81,7 +81,7 @@ function toggleZoom(e) {
           '--width': `${bouding.width}px`,
           '--height': `${bouding.height}px`,
         }"
-        class="fixed inset-0 z-2 h-[calc(100svh-var(--spacing-caption))]"
+        class="fixed inset-0 z-10 h-[calc(100svh-var(--spacing-caption))]"
         v-if="zoomedIn && media"
       >
         <ElementsMedium :item="media" />
