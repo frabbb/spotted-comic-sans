@@ -22,16 +22,16 @@ export default `{
   [
    $offset...$limit
   ] {
-    _id,
+    "id": _id,
     title,
     datetime,
     member->{
-      _id,
+      "id": _id,
       title
     },
     media->{
       "type": _type,
-      _id,
+      "id": _id,
       title,
       description,
       _type == "imageAsset" => {

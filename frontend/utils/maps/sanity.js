@@ -50,6 +50,7 @@ export const sanityData = (raw, type) => {
   switch (type) {
     case "spot": {
       return {
+        id: raw?.id,
         title: raw?.title,
         member: raw?.member?.title,
         datetime: new Date(raw?.datetime).toLocaleDateString("it-IT", {

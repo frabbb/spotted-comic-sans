@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
+  id: string;
   title: string;
   member: string;
   datetime: string;
@@ -14,30 +15,10 @@ const lockBody = useLock();
 watch(zoomedIn, (v) => {
   lockBody.value = v;
 });
-
-const bouding = ref({
-  top: 0,
-  left: 0,
-  width: 0,
-  height: 0,
-});
-
-function toggleZoom(e) {
-  transitioning.value = true;
-  const target = e.target as HTMLElement;
-  const b = target.getBoundingClientRect();
-  bouding.value = b;
-
-  zoomedIn.value = !zoomedIn.value;
-}
 </script>
 
 <template>
-  <div
-    class="group relative"
-    @click="toggleZoom"
-    :class="{ 'cursor-zoom-in': media && !zoomedIn, 'cursor-zoom-out': media && zoomedIn }"
-  >
+  <div class="group relative" :id="id">
     <div
       class="group bg-white-transparent p-xs gap-xs absolute inset-0 hidden flex-col items-center justify-center"
     >
@@ -70,21 +51,6 @@ function toggleZoom(e) {
         <ElementsText class="cursor-default text-center" :theme="{ size: 'xs' }">{{
           datetime
         }}</ElementsText>
-      </div>
-    </Transition>
-
-    <Transition name="zoom-in" @after-leave="transitioning = false">
-      <div
-        :style="{
-          '--top': `${bouding.top}px  `,
-          '--left': `${bouding.left}px`,
-          '--width': `${bouding.width}px`,
-          '--height': `${bouding.height}px`,
-        }"
-        class="fixed inset-0 z-10 h-[calc(100svh-var(--spacing-caption))]"
-        v-if="zoomedIn && media"
-      >
-        <ElementsMedium :item="media" />
       </div>
     </Transition>
   </div>
