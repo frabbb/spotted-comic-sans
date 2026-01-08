@@ -2,19 +2,23 @@
 const props = defineProps({
   containerWidth: {
     type: Number,
-    required: true,
+    default: 0,
   },
   containerHeight: {
     type: Number,
-    required: true,
+    default: 0,
   },
   containerLeft: {
     type: Number,
-    required: true,
+    default: 0,
   },
   containerTop: {
     type: Number,
-    required: true,
+    default: 0,
+  },
+  subdivisions: {
+    type: Number,
+    default: 1,
   },
 });
 
@@ -28,13 +32,12 @@ const {
 </script>
 
 <template>
-  <div class="hover:bg-grey-100 relative aspect-square cursor-pointer border" ref="item">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full">
-      <p class="w-full text-center text-[14px]">
-        {{ (((itemLeft + itemWidth / 2 - containerLeft) / containerWidth) * 100).toFixed(2) }}
-        <br />
-        {{ (((itemTop + itemHeight / 2 - containerTop) / containerHeight) * 100).toFixed(2) }}
-      </p>
-    </div>
+  <div
+    class="hover:bg-grey-100 relative grid aspect-square cursor-pointer outline"
+    ref="item"
+    :style="`grid-template-columns: repeat(${subdivisions}, 1fr)`"
+  >
+    <slot />
+    <!-- <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"></div> -->
   </div>
 </template>

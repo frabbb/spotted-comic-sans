@@ -154,6 +154,7 @@ onKeyStroke(() => {
   inputRef.value.focus();
 });
 
+const selectedEl = ref(null);
 const transformOrigin = ref({ x: 0, y: 0 });
 const transform = ref({ scale: 1, translate: { x: 0, y: 0 } });
 
@@ -192,21 +193,17 @@ function zoomOut() {
   zoomLevel.value = 0;
 }
 
-function resetTransformOrigin(e) {
+function unLockBody(e) {
   if (e.target !== gridContainer.value) return;
 
   if (zoomLevel.value === 0) {
-    transformOrigin.value = { x: 0, y: 0 };
     lockBody.value = false;
-  } else {
-    // transform.value.translate.x += transformOrigin.value.x;
-    // transform.value.translate.y += transformOrigin.value.y;
-    // transformOrigin.value = { x: 0, y: 0 };
   }
 }
 
 function zoomOnDate(dateId) {
   const date = document.getElementById(dateId);
+  selectedEl.value = dateId;
 
   if (date) {
     zoomOnHtmlElement(date);
@@ -217,40 +214,30 @@ function zoomOnDate(dateId) {
 
 function zoomOnHtmlElement(element) {
   const { top, left, width, height } = element.getBoundingClientRect();
-  const {
-    top: containerTop,
-    left: containerLeft,
-    width: containerWidth,
-    height: containerHeight,
-  } = gridContainer.value.getBoundingClientRect();
+  const { top: containerTop, left: containerLeft } = gridContainer.value.getBoundingClientRect();
 
   const center = { x: left + width / 2, y: top + height / 2 };
 
-  const targetOrigin = {
-    x: ((center.x - containerLeft) / containerWidth) * 100,
-    y: ((center.y - containerTop) / containerHeight) * 100,
+  const originalContainerBounding = {
+    left: Math.round(containerLeft - transform.value.translate.x),
+    top: Math.round(containerTop - transform.value.translate.y),
+  };
+
+  const originalCenter = {
+    x: (center.x - containerLeft) / transform.value.scale,
+    y: (center.y - containerTop) / transform.value.scale,
   };
 
   const targetScale =
     Math.min(windowWidth.value / width, windowHeight.value / height) * transform.value.scale;
 
-  const prevTranslate = { x: transform.value.translate.x, y: transform.value.translate.y };
-
   const targetTranslate = {
-    x: -(center.x - windowWidth.value / 2) / transform.value.scale + prevTranslate.x,
-    y: -(center.y - windowHeight.value / 2) / transform.value.scale + prevTranslate.y,
+    x: windowWidth.value / 2 - originalContainerBounding.left - originalCenter.x * targetScale,
+
+    y: windowHeight.value / 2 - originalContainerBounding.top - originalCenter.y * targetScale,
   };
 
-  const testTranslate = {
-    x: windowWidth.value / 2 - containerLeft - (center.x - containerLeft) * targetScale,
-
-    y: windowHeight.value / 2 - containerTop - (center.y - containerTop) * targetScale,
-  };
-
-  console.log(testTranslate);
-
-  // transformOrigin.value = targetOrigin;
-  transform.value = { scale: targetScale, translate: testTranslate };
+  transform.value = { scale: targetScale, translate: targetTranslate };
 }
 
 function zoomOnSpot(spotId) {
@@ -258,6 +245,7 @@ function zoomOnSpot(spotId) {
   if (spot) {
     zoomOnHtmlElement(spot);
   }
+  selectedEl.value = spot.id;
   zoomLevel.value = 2;
 }
 
@@ -274,36 +262,32 @@ onKeyStroke("Escape", () => {
         sticky: searchContainerHeight === 0,
         'opacity-0': zoomLevel > 0,
       }"
-      class="s:pointer-events-none top-0 z-10 w-full mix-blend-lighten transition-opacity duration-150"
+      class="s:pointer-events-none top-0 z-10 h-auto w-full mix-blend-lighten transition-opacity duration-150"
       ref="searchContainer"
     >
       <div
-        class="pb-m grid w-full place-items-center outline-none focus:outline-none focus-visible:outline-none"
+        class="pb-m grid h-full w-full place-items-center outline-none focus:outline-none focus-visible:outline-none"
       >
         <input
           ref="inputRef"
           type="text"
           v-model="search"
           :placeholder="placeholderText"
-          class="typo-year w-full text-center text-[blue] placeholder:text-[blue]"
+          class="typo-year p-s bg-grey-100 w-full rounded-full text-center text-[blue] placeholder:text-[blue]"
           :style="{
-            fontSize: `min(12vw, calc(180vw / ${search.length || Math.max(...placeholderTextVariants.map((text) => text.length))}))`,
+            fontSize: `min(20vw, calc(180vw / ${search.length || placeholderText.length}))`,
           }"
         />
       </div>
     </div>
 
-    <div class="pointer-events-none fixed top-0 left-0 z-10 h-full w-full">
-      <div class="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-[red]"></div>
-      <div class="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-[red]"></div>
-    </div>
-
+    <!--  -->
     <div
       class="w-full overflow-hidden"
-      :style="{ paddingTop: `${searchContainerHeight}px` }"
       :class="{ 'cursor-zoom-out': zoomLevel > 0 }"
       @click="zoomOut"
     >
+      <!-- :style="{ paddingTop: `${searchContainerHeight}px` }" -->
       <div
         class="p-s gap-xs m:grid-cols-6 relative grid grid-cols-4 transition-transform duration-300"
         :style="{
@@ -311,7 +295,7 @@ onKeyStroke("Escape", () => {
           transform: `translate(${transform.translate.x}px, ${transform.translate.y}px) scale(${transform.scale})`,
         }"
         ref="gridContainer"
-        @transitionend="resetTransformOrigin"
+        @transitionend="unLockBody"
       >
         <!-- <div
           class="h-s w-s absolute z-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[red] transition-all duration-150"
@@ -319,10 +303,10 @@ onKeyStroke("Escape", () => {
         ></div> -->
 
         <template v-for="(date, index) in dates" :key="index" v-if="entries.length > 0 && !search">
-          <div v-if="isLastDayOfMonth(date.date)" class="bg-grey-100">
+          <div v-if="isLastDayOfMonth(date.date)" class="col-span-full">
             <ElementsText
               class="w-full transition-opacity duration-150"
-              :theme="{ size: 'xl' }"
+              :theme="{ size: 'month' }"
               :style="{ color: monthColors.get(date.date.getMonth()) }"
               :class="{ 'text-right': date.date.getMonth() % 2 === 0, 'opacity-0': zoomLevel > 0 }"
             >
@@ -331,7 +315,11 @@ onKeyStroke("Escape", () => {
             </ElementsText>
           </div>
 
-          <div class="relative" :id="date.date.getTime()">
+          <div
+            class="relative"
+            :id="date.date.getTime()"
+            :class="{ 'opacity-0': zoomLevel === 1 && selectedEl !== date.date.getTime() }"
+          >
             <ElementsText
               class="py-s absolute right-0 bottom-0 transition-opacity duration-150"
               :class="{ 'opacity-0': zoomLevel > 0 }"
@@ -340,7 +328,7 @@ onKeyStroke("Escape", () => {
               {{ date.date.getDate() }}
             </ElementsText>
 
-            <div v-if="date.entries.length === 0" class="bg-grey-100 aspect-square w-full"></div>
+            <div v-if="date.entries.length === 0" class="aspect-square w-full"></div>
 
             <div
               :class="{
@@ -348,7 +336,11 @@ onKeyStroke("Escape", () => {
                 'grid grid-cols-4': date.entries.length >= 5,
               }"
             >
-              <div v-for="entry in date.entries" :key="entry.id">
+              <div
+                v-for="entry in date.entries"
+                :key="entry.id"
+                :class="{ 'opacity-0': zoomLevel === 2 && selectedEl !== entry.id }"
+              >
                 <Spot
                   v-bind="parsedData(entry, 'spot')"
                   :class="{ 'cursor-zoom-in': zoomLevel < 2, 'cursor-zoom-out': zoomLevel === 2 }"

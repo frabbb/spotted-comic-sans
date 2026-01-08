@@ -34,7 +34,7 @@ watch(zoomedIn, (v) => {
     </div>
 
     <div v-if="media" class="aspect-square w-full">
-      <ElementsMedium :item="media" theme="fill" :class="{ 'opacity-0': media && transitioning }" />
+      <ElementsMedium :item="media" theme="fit" :class="{ 'opacity-0': media && transitioning }" />
     </div>
 
     <Transition name="fade">
