@@ -21,7 +21,7 @@ type MediaTheme = {
 
 type SliderTheme = "default" | "media" | "stack" | "loop";
 
-type ImageTheme = "fill" | "skeleton";
+type ImageTheme = "fill" | "fit" | "skeleton";
 
 type VideoTheme = {
   variant?: "fill";

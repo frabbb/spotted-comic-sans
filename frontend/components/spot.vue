@@ -5,6 +5,8 @@ const props = defineProps<{
   member: string;
   datetime: string;
   media: any;
+  selected: boolean;
+  minResolution: number;
 }>();
 
 const zoomedIn = ref(false);
@@ -34,7 +36,13 @@ watch(zoomedIn, (v) => {
     </div>
 
     <div v-if="media" class="aspect-square w-full">
-      <ElementsMedium :item="media" theme="fit" :class="{ 'opacity-0': media && transitioning }" />
+      <ElementsMedium
+        :item="media"
+        :theme="selected ? 'fit' : 'fill'"
+        :class="{ 'opacity-0': media && transitioning }"
+        class="overflow-hidden rounded-(--radius) transition-all delay-300 duration-300 hover:rounded-(--next-radius) hover:delay-0"
+        :minResolution
+      />
     </div>
 
     <Transition name="fade">

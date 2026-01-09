@@ -25,6 +25,7 @@ const props = withDefaults(
     theme?: ImageTheme;
     lazy?: boolean;
     ratio?: [number, number];
+    minResolution?: number;
   }>(),
   {
     caption: "",
@@ -38,6 +39,7 @@ const props = withDefaults(
     mobile: undefined,
     lazy: true,
     ratio: undefined,
+    minResolution: 0,
   },
 );
 
@@ -144,16 +146,28 @@ const sources = computed(() => {
     return [];
   }
 
+  const min = Math.min(
+    props.minResolution * pixelRatio.value,
+    Math.max(...Object.keys(props.srcs || {}).map(Number)),
+  );
+
+  const defaultSrcs = Object.fromEntries(
+    Object.entries(props.srcs || {}).filter(([key]) => Number(key) >= min),
+  );
+  const mobileSrcs = Object.fromEntries(
+    Object.entries(props.mobile?.srcs || {}).filter(([key]) => Number(key) >= min),
+  );
+
   const sources: any[] = [];
 
-  if (hasMobileSrc && props.mobile?.srcs) {
-    const mobileKeys = getKeys(props.mobile?.srcs);
+  if (hasMobileSrc && mobileSrcs) {
+    const mobileKeys = getKeys(mobileSrcs);
 
     const mobileSources = mobileKeys.map((key, index) => {
       const maxWidth = key / pixelRatio.value;
 
       return {
-        srcs: props.mobile?.srcs[key],
+        srcs: mobileSrcs?.[key],
         media: `(min-width: ${index === 0 ? 0 : maxWidth}px) and (max-width: ${breakpoint - 1}px)`,
         isMobile: true,
         key,
@@ -165,7 +179,7 @@ const sources = computed(() => {
     );
   }
 
-  const desktopKeys = getKeys(props.srcs);
+  const desktopKeys = getKeys(defaultSrcs);
 
   sources.push(
     ...desktopKeys
@@ -177,7 +191,7 @@ const sources = computed(() => {
         if (parsedMinWidth < maxWidth) {
           return {
             key: key,
-            srcs: props.srcs[key],
+            srcs: defaultSrcs[key],
             media:
               index === desktopKeys.length - 1
                 ? `(min-width: ${parsedMinWidth}px)`
@@ -205,11 +219,15 @@ const ratio = computed(() => {
   return `${value[0]}/${value[1]}`;
 });
 
+const isHorizontal = computed(() => {
+  return media.value.width && media.value.height && media.value.width > media.value.height;
+});
+
 const classes = cva("", {
   variants: {
     variant: {
-      fill: "h-full w-full [&_picture]:h-full [&_picture]:w-full [&_picture]object-cover [&_img]:h-full [&_img]:w-full [&_img]:object-cover",
-      fit: "h-full w-full [&_picture]:h-full [&_picture]:w-full [&_picture]object-contain [&_img]:h-full [&_img]:w-full [&_img]:object-contain",
+      fill: "h-full w-full",
+      fit: "h-full w-full ",
       skeleton: "w-full bg-black opacity-25",
     },
   },
@@ -218,7 +236,7 @@ const classes = cva("", {
 </script>
 
 <template>
-  <figure :class="['figure', cn(classes({ variant: theme }))]">
+  <figure :class="['figure relative overflow-hidden', cn(classes({ variant: theme }))]">
     <picture :class="['lay lay-o']">
       <KeepAlive>
         <source
@@ -237,9 +255,14 @@ const classes = cva("", {
         @error="fallback"
         :style="{
           aspectRatio: ratio,
+          transform: `translate(-50%, -50%) scale(${theme === 'fill' ? (isHorizontal ? media.width / media.height : media.height / media.width) : 1})`,
         }"
         :class="[
+          'absolute top-1/2 left-1/2 transition-all duration-300',
           {
+            'h-full': !isHorizontal,
+            'w-full': isHorizontal,
+
             invisible: pending,
           },
         ]"
@@ -247,17 +270,18 @@ const classes = cva("", {
       <ClientOnly>
         <Transition name="fade">
           <div
-            class="placeholder pointer-events-none relative overflow-hidden"
-            v-if="(pending || sources.length === 0) && lazy"
+            class="placeholder pointer-events-none absolute z-1 h-full w-full overflow-hidden"
             aria-hidden="true"
+            v-if="(pending || sources.length === 0) && lazy"
           >
-            <picture>
+            <picture class="h-full w-full">
               <source
                 :srcset="mobile.placeholder"
                 :media="`(max-width: ${breakpoint - 1}px)`"
                 v-if="hasMobileSrc"
               />
               <img
+                class="h-full w-full object-cover"
                 :src="placeholder"
                 :style="{
                   aspectRatio: ratio,

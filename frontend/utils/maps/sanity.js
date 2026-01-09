@@ -156,20 +156,20 @@ export const sanityData = (raw, type) => {
 
 const sanityImage = (image) => ({
   srcs: {
-    900:
+    500:
       image?.image?.asset?.extension === "gif"
-        ? `${image?.image?.asset?.url}?w=900&h=900&fit=max`
-        : `${image?.image?.asset?.url}?w=900&h=900&fit=max&fm=webp`,
-    1800:
+        ? `${image?.image?.asset?.url}?w=500&h=500&fit=max`
+        : `${image?.image?.asset?.url}?w=500&h=500&fit=max&fm=webp`,
+    1200:
       image?.image?.asset?.extension === "gif"
-        ? `${image?.image?.asset?.url}?w=1800&h=1800&fit=max`
-        : `${image?.image?.asset?.url}?w=1800&h=1800&fit=max&fm=webp`,
-    3200:
+        ? `${image?.image?.asset?.url}?w=1200&h=1200&fit=max`
+        : `${image?.image?.asset?.url}?w=1200&h=1200&fit=max&fm=webp`,
+    2000:
       image?.image?.asset?.extension === "gif"
-        ? `${image?.image?.asset?.url}?w=3200&h=3200&fit=max`
-        : `${image?.image?.asset?.url}?w=3200&h=3200&fit=max&fm=webp`,
+        ? `${image?.image?.asset?.url}?w=2000&h=2000&fit=max`
+        : `${image?.image?.asset?.url}?w=2000&h=2000&fit=max&fm=webp`,
   },
-  placeholder: `${image?.image?.asset?.url}?w=16&h=16&fit=max&fm=webp`,
+  placeholder: `${image?.image?.asset?.url}?w=16&h=16&fit=max&fm=webp&blur=10`,
   format: image?.image?.asset?.extension,
   url: image?.image?.asset?.url,
   width: image?.image?.asset?.metadata?.dimensions?.width,

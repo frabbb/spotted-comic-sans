@@ -3,7 +3,7 @@
   --color-black: rgb(0, 0, 0);
   --color-black-transparent: rgba(0, 0, 0, 0.75);
   --color-white-transparent: rgba(255, 255, 255, 0.75);
-  --color-grey-100: rgba(200, 200, 200, 0.5);
+  --color-grey-100: rgba(220, 220, 220, 0.5);
   --color-grey-300: rgb(230, 230, 230);
   --color-grey-500: rgb(200, 200, 200);
   --color-grey-700: rgb(150, 150, 150);
@@ -38,7 +38,7 @@
   --spacing-slider: 50vh;
   --radius-DEFAULT: 4px;
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --blur-DEFAULT: 20px;
+  --blur-DEFAULT: 100px;
   --aspect-video: 16/9;
   --aspect-thumb: 4/5;
 }
